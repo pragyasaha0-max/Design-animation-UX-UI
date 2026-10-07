@@ -76,6 +76,7 @@
 .lg-btn-line{background:rgba(255,255,255,.4);border-color:var(--lg-accent-l);color:var(--lg-accent-d)}
 .lg-btn-line:hover{background:#fff;border-color:var(--lg-accent);transform:translateY(-2px)}
 .lg-btn-sm{padding:8px 16px;font-size:11px}
+.lg-btn[hidden]{display:none}
 
 /* ---------- glass panel + card ---------- */
 .lg-panel{background:var(--lg-glass);border:1px solid var(--lg-edge);border-radius:var(--lg-radius);box-shadow:var(--lg-shadow);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:26px;transition:transform .3s,box-shadow .3s,background .3s}
@@ -138,9 +139,51 @@
 .lg-js [data-lg-words] .lg-w{opacity:0;transform:translateY(.6em);transition:opacity .6s ease,transform .6s ease;transition-delay:calc(var(--i) * 55ms)}
 .lg-js [data-lg-words].is-in .lg-w{opacity:1;transform:none}
 
+/* ---------- light running around a border (add class lg-glow) ----------
+   ::before draws the travelling light, ::after draws a soft spotlight that follows the cursor.
+   Don't use ::before/::after on the same element for anything else. */
+@property --lg-a{syntax:'<angle>';inherits:false;initial-value:0deg}
+.lg-glow{position:relative;isolation:isolate}
+.lg-glow::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;pointer-events:none;
+  background:conic-gradient(from var(--lg-a),transparent 0 52%,var(--lg-accent-l) 70%,var(--lg-accent) 84%,#fff 93%,transparent 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;
+  opacity:.4;animation:lg-orbit 9s linear infinite;animation-delay:var(--lg-delay,0s);transition:opacity .35s}
+@keyframes lg-orbit{to{--lg-a:360deg}}
+.lg-glow::after{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;pointer-events:none;opacity:0;transition:opacity .35s;
+  background:radial-gradient(240px circle at var(--lg-mx,50%) var(--lg-my,50%),rgba(255,255,255,.9),transparent 65%)}
+.lg-glow:hover::before,.lg-glow.is-lit::before{opacity:1;animation-duration:3s}
+.lg-glow:hover::after{opacity:1}
+.lg-glow.is-lit{box-shadow:0 0 26px -6px var(--lg-accent),var(--lg-shadow-hi)}
+
+/* ---------- button shimmer ---------- */
+.lg-btn{position:relative;overflow:hidden}
+.lg-btn-solid::after{content:"";position:absolute;inset:0;pointer-events:none;transform:translateX(-130%);
+  background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.55) 50%,transparent 62%);animation:lg-shimmer 6s ease-in-out infinite}
+.lg-btn-solid:hover::after{animation:none;transform:translateX(130%);transition:transform .8s ease}
+@keyframes lg-shimmer{0%,70%{transform:translateX(-130%)}100%{transform:translateX(130%)}}
+
+/* ---------- counter ring: wrap a number, e.g. <div class="lg-ring"><svg>..</svg><b data-lg-count="8">0</b></div> ---------- */
+.lg-ring{position:relative;display:inline-grid;place-items:center;width:84px;height:84px}
+.lg-ring svg{position:absolute;inset:0;width:100%;height:100%}
+.lg-ring .lg-ring-track{fill:none;stroke:rgba(255,255,255,.9);stroke-width:5}
+.lg-ring .lg-ring-arc{fill:none;stroke:var(--lg-accent);stroke-width:5;stroke-linecap:round;stroke-dasharray:70 160;
+  transform-box:fill-box;transform-origin:50% 50%;animation:lg-spin 4.5s linear infinite;filter:drop-shadow(0 0 4px var(--lg-accent))}
+@keyframes lg-spin{to{transform:rotate(360deg)}}
+.lg-ring b{position:relative;font:500 24px var(--lg-serif);color:var(--lg-accent-d)}
+
+/* ---------- headline wipe: <span class="lg-wipe"> inside a [data-lg-words] heading ---------- */
+.lg-js [data-lg-words] .lg-wipe{display:inline-block;clip-path:inset(0 100% 0 0);transition:clip-path 1.2s cubic-bezier(.6,.1,.2,1) .5s}
+.lg-js [data-lg-words].is-in .lg-wipe{clip-path:inset(-10% -2% -10% 0)}
+
+/* ---------- timeline line that draws itself ---------- */
+.lg-js .lg-draw{transform:scaleY(0);transform-origin:top;transition:transform 1.4s ease}
+.lg-js .lg-draw.is-in{transform:none}
+
 @media (prefers-reduced-motion:reduce){
   .lg *,.lg *::before,.lg *::after,.lg-bg path{animation:none!important;transition:none!important}
-  .lg-js .lg-reveal,.lg-js .lg-stagger>*,.lg-js [data-lg-words] .lg-w{opacity:1!important;transform:none!important}
+  .lg-js .lg-reveal,.lg-js .lg-stagger>*,.lg-js [data-lg-words] .lg-w,.lg-js .lg-draw{opacity:1!important;transform:none!important}
+  .lg-js [data-lg-words] .lg-wipe{clip-path:none!important}
 }
 @media (max-width:760px){
   .lg-links{display:none}

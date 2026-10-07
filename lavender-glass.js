@@ -1,8 +1,8 @@
 /*
   Lavender Glass: behaviour for lavender-glass.css
 
-  Put it in <head> (no defer) so the "hidden until scrolled" states apply before first paint:
-    <script src="lavender-glass.js"></script>
+  Load it from <head>, without defer, so the "hidden until scrolled" states apply before first paint:
+    a script tag with src="lavender-glass.js"
 
   What it does
     1. adds class "lg-js" to <html>        (the CSS only hides things when this is set)
@@ -11,6 +11,8 @@
     4. .lg-reveal .lg-stagger .lg-bar      get class "is-in" when scrolled into view
     5. [data-lg-count="40"]                counts up to 40 when scrolled into view
                                            optional: data-lg-suffix="+"
+    6. [data-lg-relay]                     lights the .lg-glow children one after another
+    7. .lg-glow boxes                      get a cursor-following spotlight on hover
 
   If you add elements after page load (a framework, fetch, etc.) call LG.refresh().
 */
@@ -19,7 +21,7 @@
   var root = document.documentElement;
   root.classList.add('lg-js');
 
-  var REVEAL = '.lg-reveal, .lg-stagger, .lg-bar, [data-lg-words], [data-lg-count]';
+  var REVEAL = '.lg-reveal, .lg-stagger, .lg-bar, .lg-draw, [data-lg-words], [data-lg-count]';
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var io = null;
 
@@ -64,7 +66,7 @@
 
   /* ---- number count-up (ease-out) ---- */
   function countUp(el){
-    if(el.dataset.lgDone) return;
+    if(el.dataset.lgDone === '1') return;
     el.dataset.lgDone = '1';
     var target = parseFloat(el.getAttribute('data-lg-count'));
     var suffix = el.getAttribute('data-lg-suffix') || '';
@@ -97,6 +99,32 @@
     });
   }
 
+  /* ---- one box at a time lights up: <div data-lg-relay> ... children with class lg-glow ---- */
+  function startRelay(box){
+    if(box.dataset.lgRelay === 'on') return;
+    box.dataset.lgRelay = 'on';
+    var step = parseInt(box.getAttribute('data-lg-relay'), 10) || 2600;
+    var n = 0;
+    function next(){
+      var kids = box.querySelectorAll(':scope > .lg-glow');
+      if(!kids.length || box.matches(':hover')) return;
+      Array.prototype.forEach.call(kids, function(k){ k.classList.remove('is-lit'); });
+      kids[n % kids.length].classList.add('is-lit');
+      n++;
+    }
+    next();
+    if(!reduce) setInterval(next, step);
+  }
+
+  /* ---- spotlight follows the cursor inside .lg-glow boxes ---- */
+  document.addEventListener('pointermove', function(e){
+    var t = e.target.closest && e.target.closest('.lg-glow');
+    if(!t) return;
+    var r = t.getBoundingClientRect();
+    t.style.setProperty('--lg-mx', (e.clientX - r.left) + 'px');
+    t.style.setProperty('--lg-my', (e.clientY - r.top) + 'px');
+  }, {passive: true});
+
   function init(){
     if(document.body.hasAttribute('data-lg-bg')) addBackground();
     if('IntersectionObserver' in window){
@@ -109,10 +137,20 @@
       }, {threshold: 0.15});
     }
     scan();
+    Array.prototype.forEach.call(document.querySelectorAll('[data-lg-relay]'), startRelay);
+  }
+
+  /* set a counter to a new value and play it again (used after content changes) */
+  function count(el, target, suffix){
+    el.setAttribute('data-lg-count', target);
+    if(suffix !== undefined) el.setAttribute('data-lg-suffix', suffix);
+    el.dataset.lgDone = '';
+    if(el.closest('.is-in') || el.classList.contains('is-in')) countUp(el);
   }
 
   window.LG = {
-    refresh: scan,
+    refresh: function(){ if(!io) return; scan(); Array.prototype.forEach.call(document.querySelectorAll('[data-lg-relay]'), startRelay); },
+    count: count,
     theme: function(name){ root.setAttribute('data-lg-theme', name); }
   };
 

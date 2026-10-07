@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" data-lg-theme="minimal">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lavender Glass theme: preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lavender-glass.css">
+<script src="lavender-glass.js"></script>
+</head>
+<body class="lg" data-lg-bg>
+
+<!-- This page only shows each piece of the theme. Copy the parts you need. -->
+
+<nav class="lg-nav">
+  <div class="lg-nav-in">
+    <a class="lg-logo" href="#"><span class="lg-logo-mark">L</span>LAVENDER GLASS</a>
+    <div class="lg-links">
+      <a class="is-on" href="#hero">Hero</a><a href="#cards">Cards</a><a href="#stats">Stats</a><a href="#misc">Lists</a>
+    </div>
+    <a class="lg-btn lg-btn-solid lg-btn-sm" href="#cta">Contact</a>
+  </div>
+</nav>
+
+<main class="lg-wrap">
+
+  <header id="hero" style="padding:70px 0 40px">
+    <div class="lg-tag">Theme preview</div>
+    <h1 class="lg-display" data-lg-words>Designing digital futures <em>that inspire</em></h1>
+    <p class="lg-lede lg-reveal">Glass panels, moving lines, words that appear as you scroll, and a hover state on everything.</p>
+    <div class="lg-reveal">
+      <a class="lg-btn lg-btn-solid" href="#cards">Primary button</a>
+      <a class="lg-btn lg-btn-line" href="#misc">Outline button</a>
+    </div>
+    <p class="lg-muted lg-reveal" style="margin-top:22px;font-size:12px">Colour direction:
+      <button class="lg-btn lg-btn-line lg-btn-sm" onclick="LG.theme('minimal')">Minimal</button>
+      <button class="lg-btn lg-btn-line lg-btn-sm" onclick="LG.theme('editorial')">Editorial</button>
+      <button class="lg-btn lg-btn-line lg-btn-sm" onclick="LG.theme('futuristic')">Futuristic</button>
+      <button class="lg-btn lg-btn-line lg-btn-sm" onclick="LG.theme('creative')">Creative</button>
+    </p>
+  </header>
+
+  <section id="cards" style="padding:40px 0">
+    <h2 class="lg-title" data-lg-words>Cards</h2>
+    <div class="lg-grid lg-stagger">
+      <article class="lg-card"><div class="lg-card-media"></div><div class="lg-card-body"><h3>Card one</h3><p>Lifts and glows on hover. Add an image inside the media block.</p></div></article>
+      <article class="lg-card"><div class="lg-card-media"></div><div class="lg-card-body"><h3>Card two</h3><p>Children of .lg-stagger appear one after another.</p></div></article>
+      <article class="lg-card"><div class="lg-card-media"></div><div class="lg-card-body"><h3>Card three</h3><p>Title changes colour when the card is hovered.</p></div></article>
+    </div>
+  </section>
+
+  <section id="stats" style="padding:40px 0">
+    <h2 class="lg-title" data-lg-words>Numbers</h2>
+    <div class="lg-grid lg-stagger">
+      <div class="lg-stat"><b data-lg-count="40" data-lg-suffix="+">0</b><span>Projects completed</span></div>
+      <div class="lg-stat"><b data-lg-count="98" data-lg-suffix="%">0</b><span>Client satisfaction</span></div>
+      <div class="lg-stat"><b data-lg-count="5" data-lg-suffix="+">0</b><span>Years of experience</span></div>
+    </div>
+  </section>
+
+  <section id="misc" style="padding:40px 0">
+    <h2 class="lg-title" data-lg-words>Lists, chips and bars</h2>
+    <div class="lg-grid">
+      <div class="lg-panel lg-reveal">
+        <div class="lg-kicker" style="margin-bottom:10px">List</div>
+        <ul class="lg-list"><li>User research</li><li>Wireframing</li><li>Interaction design</li><li>Prototyping</li></ul>
+      </div>
+      <div class="lg-panel lg-reveal">
+        <div class="lg-kicker" style="margin-bottom:14px">Chips</div>
+        <div class="lg-chips"><span class="lg-chip">Figma</span><span class="lg-chip">Framer</span><span class="lg-chip">Notion</span><span class="lg-chip">Blender</span></div>
+        <p style="margin-top:18px">Hover a <span class="lg-hl">highlighted phrase</span> to see the sweep.</p>
+      </div>
+      <div class="lg-panel lg-reveal">
+        <div class="lg-kicker" style="margin-bottom:14px">Bars</div>
+        <div class="lg-bar" style="--lg-pct:86;margin-bottom:12px"><i></i></div>
+        <div class="lg-bar" style="--lg-pct:64;margin-bottom:12px"><i></i></div>
+        <div class="lg-bar" style="--lg-pct:31"><i></i></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cta" class="lg-panel lg-reveal" style="margin:40px 0 60px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap">
+    <div><h2 class="lg-title" data-lg-words>Let's create something extraordinary</h2><p class="lg-muted" style="margin:0">A panel used as a closing banner.</p></div>
+    <a class="lg-btn lg-btn-solid" href="#hero">Back to top</a>
+  </section>
+
+</main>
+</body>
+</html>
