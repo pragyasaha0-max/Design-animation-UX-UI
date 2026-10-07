@@ -1,0 +1,148 @@
+/*
+  Lavender Glass: a drop-in theme.
+  Everything is prefixed lg- so it won't fight the host site's own CSS.
+  Needs lavender-glass.js for scroll reveal, word reveal and the moving lines.
+
+  Fonts (optional, falls back to Georgia / system-ui):
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+*/
+
+/* ---------- tokens ---------- */
+:root{
+  --lg-bg:#efeafb;
+  --lg-blob-1:#d6c9ff; --lg-blob-2:#e6dcff; --lg-blob-3:#cbbaf6;
+  --lg-accent:#7a5cd6; --lg-accent-d:#5a3fb3; --lg-accent-l:#cfc3f6;
+  --lg-ink:#1d1830; --lg-mute:#675f82;
+  --lg-glass:rgba(255,255,255,.55); --lg-glass-hi:rgba(255,255,255,.92); --lg-edge:rgba(255,255,255,.95);
+  --lg-shadow:0 10px 30px rgba(90,63,179,.10); --lg-shadow-hi:0 18px 44px rgba(90,63,179,.24);
+  --lg-serif:'Playfair Display',Georgia,serif;
+  --lg-sans:'DM Sans',system-ui,-apple-system,sans-serif;
+  --lg-radius:22px;
+}
+
+/* colour directions: put data-lg-theme="..." on <html> or any wrapper */
+[data-lg-theme="editorial"]{--lg-bg:#ecebf1;--lg-blob-1:#d9d7e6;--lg-blob-2:#e6e4ef;--lg-blob-3:#cfcce0;--lg-accent:#4a4660;--lg-accent-d:#2b2840;--lg-accent-l:#cfcbe0;--lg-shadow:0 10px 30px rgba(43,40,64,.10);--lg-shadow-hi:0 18px 44px rgba(43,40,64,.22)}
+[data-lg-theme="futuristic"]{--lg-bg:#e8edfb;--lg-blob-1:#c9d4fb;--lg-blob-2:#dbe3fc;--lg-blob-3:#b9c6f5;--lg-accent:#4c5fd5;--lg-accent-d:#2f3fa8;--lg-accent-l:#bfc8f5;--lg-shadow:0 10px 30px rgba(47,63,168,.10);--lg-shadow-hi:0 18px 44px rgba(47,63,168,.24)}
+[data-lg-theme="creative"]{--lg-bg:#f8ebf5;--lg-blob-1:#f3cfe8;--lg-blob-2:#f8dff0;--lg-blob-3:#ecbfdc;--lg-accent:#c25aa8;--lg-accent-d:#9a3a85;--lg-accent-l:#f0c4e4;--lg-shadow:0 10px 30px rgba(154,58,133,.10);--lg-shadow-hi:0 18px 44px rgba(154,58,133,.24)}
+
+/* ---------- base: add class "lg" to <body> or a wrapper ---------- */
+.lg{background:var(--lg-bg);color:var(--lg-ink);font:15px/1.6 var(--lg-sans);-webkit-font-smoothing:antialiased}
+.lg *,.lg *::before,.lg *::after{box-sizing:border-box}
+:where(.lg) a{color:inherit;text-decoration:none}
+.lg-wrap{max-width:1140px;margin:0 auto;padding:0 24px}
+
+/* ---------- animated background (JS inserts .lg-bg when <body data-lg-bg>) ---------- */
+.lg-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(55% 45% at 85% 0%,var(--lg-blob-1),transparent 70%),
+             radial-gradient(45% 40% at 0% 55%,var(--lg-blob-2),transparent 70%),
+             radial-gradient(40% 40% at 95% 100%,var(--lg-blob-3),transparent 70%),var(--lg-bg)}
+.lg-bg svg{position:absolute;inset:0;width:100%;height:100%}
+.lg-bg path{fill:none;stroke:var(--lg-accent);stroke-width:1;opacity:.26;stroke-dasharray:3 9;animation:lg-drift 32s linear infinite}
+.lg-bg path:nth-child(2){animation-duration:46s;animation-direction:reverse;opacity:.18}
+.lg-bg path:nth-child(3){animation-duration:58s}
+@keyframes lg-drift{to{stroke-dashoffset:-640}}
+
+/* any svg line you draw yourself: add class lg-line to a <path>/<line>/<ellipse> */
+.lg-line{fill:none;stroke:var(--lg-accent);stroke-width:1.2;stroke-dasharray:3 8;animation:lg-drift 24s linear infinite}
+
+/* ---------- type ---------- */
+.lg-display{font:500 clamp(34px,5.2vw,62px)/1.04 var(--lg-serif);text-transform:uppercase;letter-spacing:-.005em;margin:0 0 20px}
+.lg-display em{font-style:normal;color:var(--lg-accent)}
+.lg-title{font:500 clamp(24px,3vw,34px)/1.15 var(--lg-serif);margin:0 0 10px}
+.lg-lede{color:var(--lg-mute);font-size:16px;max-width:46ch;margin:0 0 26px}
+.lg-tag{display:inline-flex;align-items:center;padding:5px 12px;border-radius:99px;border:1px solid var(--lg-accent-l);background:rgba(255,255,255,.6);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--lg-accent-d);margin-bottom:18px}
+.lg-kicker{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--lg-accent-d)}
+.lg-muted{color:var(--lg-mute)}
+
+/* text highlight on hover: wrap words in <span class="lg-hl"> */
+.lg-hl{background:linear-gradient(var(--lg-accent-l),var(--lg-accent-l)) 0 100%/0 .45em no-repeat;transition:background-size .35s ease}
+.lg-hl:hover,.lg-panel:hover .lg-hl{background-size:100% .45em}
+
+/* ---------- nav ---------- */
+.lg-nav{position:sticky;top:12px;z-index:30;margin:12px auto 0;max-width:1140px;padding:0 24px}
+.lg-nav-in{display:flex;align-items:center;justify-content:space-between;gap:16px;height:60px;padding:0 14px 0 18px;border-radius:99px;background:rgba(255,255,255,.62);border:1px solid var(--lg-edge);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:var(--lg-shadow)}
+.lg-logo{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.04em;font-size:14px}
+.lg-logo-mark{width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,var(--lg-accent),var(--lg-accent-l));display:grid;place-items:center;color:#fff;font-size:12px;transition:transform .3s}
+.lg-logo:hover .lg-logo-mark{transform:rotate(-10deg) scale(1.1)}
+.lg-links{display:flex;gap:6px}
+.lg-links a{padding:7px 14px;border-radius:99px;font-size:12.5px;color:var(--lg-mute);transition:background .2s,color .2s}
+.lg-links a:hover{background:rgba(255,255,255,.92);color:var(--lg-accent-d)}
+.lg-links a.is-on{background:var(--lg-accent-l);color:var(--lg-accent-d)}
+
+/* ---------- buttons ---------- */
+.lg-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:99px;padding:12px 24px;font:700 12px var(--lg-sans);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:transform .2s,box-shadow .25s,background .25s,border-color .25s}
+.lg-btn-solid{background:linear-gradient(135deg,var(--lg-accent),var(--lg-accent-d));color:#fff;box-shadow:0 6px 18px rgba(90,63,179,.28)}
+.lg-btn-solid:hover{transform:translateY(-2px);box-shadow:var(--lg-shadow-hi)}
+.lg-btn-line{background:rgba(255,255,255,.4);border-color:var(--lg-accent-l);color:var(--lg-accent-d)}
+.lg-btn-line:hover{background:#fff;border-color:var(--lg-accent);transform:translateY(-2px)}
+.lg-btn-sm{padding:8px 16px;font-size:11px}
+
+/* ---------- glass panel + card ---------- */
+.lg-panel{background:var(--lg-glass);border:1px solid var(--lg-edge);border-radius:var(--lg-radius);box-shadow:var(--lg-shadow);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:26px;transition:transform .3s,box-shadow .3s,background .3s}
+.lg-panel:hover{transform:translateY(-5px);box-shadow:var(--lg-shadow-hi);background:var(--lg-glass-hi)}
+.lg-grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.lg-card{border-radius:18px;overflow:hidden;background:rgba(255,255,255,.7);border:1px solid var(--lg-edge);transition:transform .3s,box-shadow .3s}
+.lg-card:hover{transform:translateY(-6px);box-shadow:var(--lg-shadow-hi)}
+.lg-card-media{height:140px;overflow:hidden;background:linear-gradient(135deg,var(--lg-accent),var(--lg-accent-l))}
+.lg-card-media img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s}
+.lg-card:hover .lg-card-media img{transform:scale(1.1)}
+.lg-card-body{padding:14px 16px 18px}
+.lg-card h3{font-size:15px;margin:0 0 4px;transition:color .2s}
+.lg-card:hover h3{color:var(--lg-accent)}
+.lg-card p{font-size:13px;color:var(--lg-mute);margin:0}
+
+/* ---------- small pieces ---------- */
+.lg-chip{display:inline-block;padding:6px 14px;border-radius:99px;background:var(--lg-accent-l);color:var(--lg-accent-d);font-size:12px;font-weight:700;transition:transform .2s,background .2s,color .2s}
+.lg-chip:hover{transform:translateY(-3px);background:var(--lg-accent);color:#fff}
+.lg-chips{display:flex;flex-wrap:wrap;gap:8px}
+
+.lg-list{list-style:none;margin:0;padding:0}
+.lg-list li{display:flex;justify-content:space-between;gap:16px;padding:12px;margin:0 -12px;border-radius:12px;transition:background .2s,padding-left .2s}
+.lg-list li:hover{background:rgba(255,255,255,.88);padding-left:20px}
+
+.lg-stat{padding:18px;border-radius:16px;background:rgba(255,255,255,.6);transition:transform .25s,background .25s,box-shadow .25s}
+.lg-stat:hover{transform:translateY(-4px);background:#fff;box-shadow:var(--lg-shadow-hi)}
+.lg-stat b{display:block;font:500 40px/1 var(--lg-serif);color:var(--lg-accent-d)}
+.lg-stat span{font-size:12px;color:var(--lg-mute)}
+
+.lg-icon{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.85);display:grid;place-items:center;color:var(--lg-accent-d);font-weight:700;transition:background .25s,color .25s,transform .25s}
+.lg-panel:hover .lg-icon,.lg-card:hover .lg-icon{background:var(--lg-accent);color:#fff;transform:rotate(-8deg)}
+
+/* animated ring/bar: set --lg-pct (0-100) inline, e.g. style="--lg-pct:72" */
+.lg-bar{height:6px;border-radius:99px;background:rgba(255,255,255,.9);overflow:hidden}
+.lg-bar i{display:block;height:100%;width:calc(var(--lg-pct,0) * 1%);border-radius:99px;background:linear-gradient(90deg,var(--lg-accent),var(--lg-accent-d));transition:width 1s cubic-bezier(.3,.7,.2,1)}
+.lg-js .lg-bar:not(.is-in) i{width:0}
+
+/* floating decoration: add to any image/shape */
+.lg-float{animation:lg-bob 7s ease-in-out infinite}
+@keyframes lg-bob{50%{transform:translateY(-10px)}}
+
+/* ---------- scroll reveal ---------- */
+/* hidden only when JS is running, so a no-JS page still shows everything */
+.lg-js .lg-reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.lg-js .lg-reveal.is-in{opacity:1;transform:none}
+.lg-js .lg-reveal.is-in.lg-panel:hover{transform:translateY(-5px)}
+
+/* children appear one after another */
+.lg-js .lg-stagger>*{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease,box-shadow .3s,background .3s}
+.lg-js .lg-stagger.is-in>*{opacity:1;transform:none}
+.lg-js .lg-stagger.is-in>*:nth-child(2){transition-delay:.1s}
+.lg-js .lg-stagger.is-in>*:nth-child(3){transition-delay:.2s}
+.lg-js .lg-stagger.is-in>*:nth-child(4){transition-delay:.3s}
+.lg-js .lg-stagger.is-in>*:nth-child(5){transition-delay:.4s}
+.lg-js .lg-stagger.is-in>*:nth-child(n+6){transition-delay:.5s}
+.lg-js .lg-stagger.is-in>*:hover{transform:translateY(-5px);transition-delay:0s}
+
+/* words appear one by one: <h1 data-lg-words>...</h1> (JS wraps each word) */
+.lg-w{display:inline-block}
+.lg-js [data-lg-words] .lg-w{opacity:0;transform:translateY(.6em);transition:opacity .6s ease,transform .6s ease;transition-delay:calc(var(--i) * 55ms)}
+.lg-js [data-lg-words].is-in .lg-w{opacity:1;transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  .lg *,.lg *::before,.lg *::after,.lg-bg path{animation:none!important;transition:none!important}
+  .lg-js .lg-reveal,.lg-js .lg-stagger>*,.lg-js [data-lg-words] .lg-w{opacity:1!important;transform:none!important}
+}
+@media (max-width:760px){
+  .lg-links{display:none}
+  .lg-panel{padding:20px}
+}
